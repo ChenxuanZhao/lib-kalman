@@ -14,27 +14,22 @@
 #include <math.h>
 #include <stdlib.h>
 
-void Kalman_FilterInit(KalmanTypeDef *cfg) {
-  cfg->estimate_value = 0;
-  cfg->estimate_covariance = 0.1;
-  cfg->measure_covariance = 0.02;
+void KalmanFilter_Init(KalmanTypeDef *cfg) {
+    cfg->x = 0;
+    cfg->p = 5;
+    cfg->A = 1;
+    cfg->H = 1;
+    cfg->q = 0.25;
+    cfg->r = 1;
 }
 
-void Kalman_FilterUpdate(KalmanTypeDef *cfg, float measure) {
-  float kalman_gain = 0;
+float KalmanFilter_Update(KalmanTypeDef *cfg, float measure) {
+    cfg->x = cfg->A * cfg->x;
+    cfg->p = cfg->A * cfg->A * cfg->p + cfg->q;
 
-  /* 计算卡尔曼增益 */
-  kalman_gain = cfg->estimate_covariance *
-                sqrt(1 / (pow(cfg->estimate_covariance, 2) +
-                          pow(cfg->measure_covariance, 2) + 1));
+    cfg->gain = cfg->p * cfg->H / (cfg->p * cfg->H * cfg->H + cfg->r);
+    cfg->x = cfg->x + cfg->gain * (measure - cfg->H * cfg->x);
+    cfg->p = (1 - cfg->gain * cfg->H) * cfg->p;
 
-  /* 计算本次滤波估计值 */
-  cfg->estimate_value =
-      cfg->estimate_value + kalman_gain * (measure - cfg->estimate_value);
-
-  /* 更新估计协方差 */
-  cfg->estimate_covariance = sqrt(1 - kalman_gain) * cfg->estimate_covariance;
-
-  /* 更新测量方差 */
-  cfg->measure_covariance = sqrt(1 - kalman_gain) * cfg->measure_covariance;
+    return cfg->x;
 }

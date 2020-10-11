@@ -9,24 +9,28 @@
  *
  */
 
-#ifndef __LIB_KALMAN_H
-#define __LIB_KALMAN_H
+#ifndef __LIB_KALMAN_H__
+#define __LIB_KALMAN_H__
 
 typedef struct __KalmanTypeDef {
-  float estimate_covariance; /* 估计协方差 */
-  float measure_covariance;  /* 测量协方差 */
-  float estimate_value;      /* 估计值 */
+    float x;
+    float A;
+    float H;
+    float q;
+    float r;
+    float p;
+    float gain;
 } KalmanTypeDef;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-void Kalman_FilterInit(KalmanTypeDef *);
-void Kalman_FilterUpdate(KalmanTypeDef *, float);
+void KalmanFilter_Init(KalmanTypeDef *);
+void KalmanFilter_Update(KalmanTypeDef *, float);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __LIB_KALMAN_H */
+#endif /* __LIB_KALMAN_H__ */
