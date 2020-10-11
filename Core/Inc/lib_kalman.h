@@ -27,7 +27,7 @@ extern "C" {
 #endif
 
 void KalmanFilter_Init(KalmanTypeDef *);
-void KalmanFilter_Update(KalmanTypeDef *, float);
+float KalmanFilter_Update(KalmanTypeDef *, float);
 
 #ifdef __cplusplus
 }
